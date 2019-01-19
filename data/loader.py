@@ -234,6 +234,33 @@ class CreditDefaultData(DataLoader):
         return train_features, train_classes
 
 
+class AdultData(DataLoader):
+
+    def __init__(self, path='data/clean_adult_test.csv', verbose=False, seed=1):
+        super().__init__(path, verbose, seed)
+
+    def _load_data(self):
+        self._data = pd.read_csv(self._path, header=0, index_col=0)
+
+    def data_name(self):
+        return 'AdultData'
+
+    def class_column_name(self):
+        return 'income'
+
+    def _preprocess_data(self):
+        pass
+
+    def pre_training_adjustment(self, train_features, train_classes):
+        """
+        Perform any adjustments to training data before training begins.
+        :param train_features: The training features to adjust
+        :param train_classes: The training classes to adjust
+        :return: The processed data
+        """
+        return train_features, train_classes
+
+
 class CreditApprovalData(DataLoader):
 
     def __init__(self, path='data/crx.data', verbose=False, seed=1):

@@ -51,9 +51,9 @@ if __name__ == '__main__':
             'readable_name': 'Credit Default',
         }
     ds2_details = {
-            'data': loader.PenDigitData(verbose=verbose, seed=seed),
-            'name': 'pen_digits',
-            'readable_name': 'Handwritten Digits',
+            'data': loader.AdultData(verbose=verbose, seed=seed),
+            'name': 'adult_income',
+            'readable_name': 'Adult Income',
         }
 
     if verbose:
