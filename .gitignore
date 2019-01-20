@@ -5,3 +5,4 @@ __pycache__
 __init__.py
 .cache
 assess_portfolio/*.txt
+*/output/*

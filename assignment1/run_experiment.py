@@ -46,9 +46,9 @@ if __name__ == '__main__':
     print("----------")
 
     ds1_details = {
-            'data': loader.CreditDefaultData(verbose=verbose, seed=seed),
-            'name': 'credit_default',
-            'readable_name': 'Credit Default',
+            'data': loader.SpamData(verbose=verbose, seed=seed),
+            'name': 'spam',
+            'readable_name': 'Spam',
         }
     ds2_details = {
             'data': loader.AdultData(verbose=verbose, seed=seed),
