@@ -1,27 +1,21 @@
 import datetime
-import logging
 import os
-import sys
-
 from collections import defaultdict
 from time import clock
 
-import pandas as pd
 import sklearn.model_selection as ms
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import make_scorer, accuracy_score, f1_score, confusion_matrix
 from sklearn.model_selection import validation_curve
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 from sklearn.utils import compute_sample_weight
 
-from .base import *
 from .ANN import *
 from .Boosting import *
 from .DT import *
 from .KNN import *
 from .SVM import *
+from .base import *
 from .plotting import *
 
 __all__ = ['ANN', 'Boosting', 'DT', 'KNN', 'SVM']
@@ -96,7 +90,8 @@ def basic_results(clf, classes, training_x, training_y, test_x, test_y, params, 
                     bbox_inches='tight')
 
         plt = plot_confusion_matrix(cnf_matrix, classes, normalize=True,
-                                    title='Normalized Confusion Matrix: {} - {}'.format(clf_type, dataset_readable_name))
+                                    title='Normalized Confusion Matrix: {} - {}'.format(clf_type,
+                                                                                        dataset_readable_name))
         plt.savefig('{}/images/{}_{}_NCM.png'.format(OUTPUT_DIRECTORY, clf_type, dataset), format='png', dpi=150,
                     bbox_inches='tight')
 
@@ -294,11 +289,19 @@ def perform_experiment(ds, ds_name, ds_readable_name, clf, clf_name, clf_label, 
                 param_display_name = complexity_param['display_name']
             if 'x_scale' in complexity_param:
                 x_scale = complexity_param['x_scale']
-            make_complexity_curve(ds.features, ds.classes, complexity_param['name'], param_display_name,
-                                  complexity_param['values'], pipe,
-                                  clf_name, ds_name, ds_readable_name, x_scale,
+            make_complexity_curve(ds.features,
+                                  ds.classes,
+                                  complexity_param['name'],
+                                  param_display_name,
+                                  complexity_param['values'],
+                                  pipe,
+                                  clf_name,
+                                  ds_name,
+                                  ds_readable_name,
+                                  x_scale,
                                   balanced_dataset=ds.balanced,
-                                  threads=threads, verbose=verbose)
+                                  threads=threads,
+                                  verbose=verbose)
 
         if timing_params is not None:
             pipe.set_params(**timing_params)

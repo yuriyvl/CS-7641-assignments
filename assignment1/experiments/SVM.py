@@ -17,9 +17,9 @@ class SVMExperiment(experiments.BaseExperiment):
         samples = self._details.ds.features.shape[0]
         features = self._details.ds.features.shape[1]
 
-        gamma_fracs = np.arange(1 / features, 2.1, 0.2)
+        # gamma_fracs = np.arange(1 / features, 2.1, 0.2)
         tols = np.arange(1e-8, 1e-1, 0.01)
-        C_values = np.arange(0.001, 2.5, 0.25)
+        C_values = np.arange(0.101, 2.5, 0.25)
         iters = [-1, int((1e6 / samples) / .8) + 1]
 
         best_params_linear = None
@@ -70,9 +70,8 @@ class SVMExperiment(experiments.BaseExperiment):
         #     'tol': 0.06000001,
         #     'verbose': False
         # }
-        #
-        # Spam:
-        #
+
+        # # Spam:
         # best_params_linear = {
         #     'C': 2.251,
         #     'cache_size': 200,
@@ -88,7 +87,7 @@ class SVMExperiment(experiments.BaseExperiment):
         #     'tol': 0.09000000999999999,
         #     'verbose': False
         # }
-
+        #
         # best_params_rbf = {
         #     'C': 2.001,
         #     'cache_size': 200,
@@ -105,18 +104,18 @@ class SVMExperiment(experiments.BaseExperiment):
         #     'verbose': False
         # }
 
-        ########## RBF SVM
-        params = {'SVM__max_iter': iters, 'SVM__tol': tols, 'SVM__class_weight': ['balanced'],
+        params = {'SVM__max_iter': [5000], 'SVM__tol': tols, 'SVM__class_weight': ['balanced'],
                   'SVM__C': C_values,
-                  'SVM__decision_function_shape': ['ovo', 'ovr'], 'SVM__gamma': gamma_fracs}
-        # complexity_param = {'name': 'SVM__C', 'display_name': 'Penalty', 'values': np.arange(0.001, 2.5, 0.1)}
-        complexity_param = {'name': 'SVM__gamma', 'display_name': 'Gamma', 'values': np.arange(1 / features, 2.1, 0.2)}
+                  'SVM__decision_function_shape': ['ovo'], 'SVM__gamma': [0.017857142857142856]}
+        complexity_param = {'name': 'SVM__C', 'display_name': 'Penalty', 'values': C_values}
+        # complexity_param = {'name': 'SVM__gamma', 'display_name': 'Gamma', 'values': np.arange(1 / features, 2.1, 0.2)}
 
         iteration_details = {
             # 'x_scale': 'log',
             'params': {'SVM__max_iter': [2 ** x for x in range(12)]},
         }
 
+        ########## RBF SVM
         learner = learners.SVMLearner(kernel='rbf')
         if best_params_rbf is not None:
             learner.set_params(**best_params_rbf)

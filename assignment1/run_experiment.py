@@ -45,12 +45,12 @@ if __name__ == '__main__':
     print("Loading data")
     print("----------")
 
-    ds1_details = {
+    spam_details = {
             'data': loader.SpamData(verbose=verbose, seed=seed),
             'name': 'spam',
             'readable_name': 'Spam',
         }
-    ds2_details = {
+    adult_details = {
             'data': loader.AdultData(verbose=verbose, seed=seed),
             'name': 'adult_income',
             'readable_name': 'Adult Income',
@@ -63,8 +63,8 @@ if __name__ == '__main__':
     timings = {}
 
     datasets = [
-        ds1_details,
-        ds2_details
+        spam_details,
+        adult_details
     ]
 
     experiment_details = []
