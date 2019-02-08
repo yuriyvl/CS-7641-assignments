@@ -1,15 +1,22 @@
 import datetime
+import logging
 import os
+import sys
+
 from collections import defaultdict
 from time import clock
 
+import pandas as pd
 import sklearn.model_selection as ms
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import make_scorer, accuracy_score, f1_score, confusion_matrix
 from sklearn.model_selection import validation_curve
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.utils import compute_sample_weight
 
+from .base import *
 from .ANN import *
 from .Boosting import *
 from .DT import *
