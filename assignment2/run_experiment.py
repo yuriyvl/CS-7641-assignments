@@ -45,6 +45,11 @@ if __name__ == '__main__':
     logger.info("----------")
 
     datasets = [
+        {
+            'data': loader.AdultData(verbose=verbose, seed=seed),
+            'name': 'adult',
+            'readable_name': 'Adult Income',
+        },
         # {
         #     'data': loader.StatlogVehicleData(verbose=verbose, seed=seed),
         #     'name': 'statlog_vehicle',
@@ -55,16 +60,16 @@ if __name__ == '__main__':
         #     'name': 'htru2',
         #     'readable_name': 'HTRU2',
         # },
-        {
-            'data': loader.CreditApprovalData(verbose=verbose, seed=seed),
-            'name': 'credit_approval',
-            'readable_name': 'Credit Approval',
-        },
-        {
-            'data': loader.PenDigitData(verbose=verbose, seed=seed),
-            'name': 'pen_digits',
-            'readable_name': 'Handwritten Digits',
-        }
+        # {
+        #     'data': loader.CreditApprovalData(verbose=verbose, seed=seed),
+        #     'name': 'credit_approval',
+        #     'readable_name': 'Credit Approval',
+        # },
+        # {
+        #     'data': loader.PenDigitData(verbose=verbose, seed=seed),
+        #     'name': 'pen_digits',
+        #     'readable_name': 'Handwritten Digits',
+        # }
         # {
         #     'data': loader.SpamData(verbose=verbose, seed=seed),
         #     'name': 'spam',
