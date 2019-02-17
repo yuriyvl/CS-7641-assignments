@@ -13,7 +13,7 @@ from func.nn.activation import RELU
 from base import *
 
 # Network parameters found "optimal" in Assignment 1
-INPUT_LAYER = 50
+INPUT_LAYER = 56
 HIDDEN_LAYER1 = 28
 HIDDEN_LAYER2 = 28
 HIDDEN_LAYER3 = 28
