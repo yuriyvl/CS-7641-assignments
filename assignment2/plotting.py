@@ -456,10 +456,18 @@ def plot_best_curves(problem_name, files, output_dir, nn_curve=False):
     else:
         p = plot_data('{} - Best: {} vs Iterations'.format(problem_name, 'Function Evals'), main_df['fevals'],
                       prefixes, nn_curve=nn_curve, validate_only=nn_curve,
-                      y_label=y_label)
+                      y_label="Function Evaluations (Log)", y_scale='log')
         p.savefig(
             '{}/{}/Best_{}.png'.format(output_dir, problem_name, 'Fevals'),
             format='png', dpi=150)
+
+        p = plot_data('{} - Best: {} vs Iterations'.format(problem_name, 'Time'), main_df['time'],
+                      prefixes, nn_curve=nn_curve, validate_only=nn_curve, y_scale='log',
+                      y_label="Log Time (sec)")
+        p.savefig(
+            '{}/{}/Best_{}.png'.format(output_dir, problem_name, 'Time'),
+            format='png', dpi=150)
+
         main_df = main_df['fitness']
 
     p = plot_data('{} - Best: {} vs Iterations'.format(problem_name, y_label), main_df,
