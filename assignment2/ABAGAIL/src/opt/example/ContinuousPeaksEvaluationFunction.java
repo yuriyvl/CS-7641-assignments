@@ -37,8 +37,8 @@ public class ContinuousPeaksEvaluationFunction implements EvaluationFunction {
             } else {
                 if (count > max0) {
                     max0 = count;
-                    count = 0;
                 }
+                count = 0;
             }
         }
         int max1 = 0;
@@ -49,8 +49,8 @@ public class ContinuousPeaksEvaluationFunction implements EvaluationFunction {
             } else {
                 if (count > max1) {
                     max1 = count;
-                    count = 0;
                 }
+                count = 0;
             }
         }
         int r = 0;
