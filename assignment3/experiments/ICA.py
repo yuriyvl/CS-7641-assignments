@@ -35,6 +35,7 @@ class ICAExperiment(experiments.BaseExperiment):
         # %% Data for 1
         ica = FastICA(random_state=self._details.seed)
         kurt = {}
+        recon = {}
         for dim in self._dims:
             ica.set_params(n_components=dim)
             tmp = ica.fit_transform(self._details.ds.training_x)
@@ -42,8 +43,15 @@ class ICAExperiment(experiments.BaseExperiment):
             tmp = tmp.kurt(axis=0)
             kurt[dim] = tmp.abs().mean()
 
+            tmp = ica.fit_transform(self._details.ds.training_x)
+            rec = ica.inverse_transform(tmp)
+            recon[dim] = np.sum(np.square(rec - self._details.ds.training_x))
+
         kurt = pd.Series(kurt)
-        kurt.to_csv(self._out.format('{}_scree.csv'.format(self._details.ds_name)))
+        kurt.to_csv(self._out.format('{}_scree_1.csv'.format(self._details.ds_name)))
+
+        # recon = pd.Series(recon)
+        # recon.to_csv(self._out.format('{}_scree_2.csv'.format(self._details.ds_name)))
 
         # %% Data for 2
         grid = {'ica__n_components': self._dims, 'NN__alpha': self._nn_reg, 'NN__hidden_layer_sizes': self._nn_arch}

@@ -23,7 +23,6 @@ from os.path import basename
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-
 # input_path = 'output.final/'
 # output_path = 'output.final/images/'
 input_path = 'output/'
@@ -121,7 +120,7 @@ def watermark(p):
 
     ax = plt.gca()
     for i in range(1, 11):
-        p.text(0.95, 0.95 - (i * (1.0/10)), '{} {}'.format(GATECH_USERNAME, TERM), transform=ax.transAxes,
+        p.text(0.95, 0.95 - (i * (1.0 / 10)), '{} {}'.format(GATECH_USERNAME, TERM), transform=ax.transAxes,
                fontsize=32, color='gray',
                ha='right', va='bottom', alpha=0.2)
     return p
@@ -210,12 +209,13 @@ def plot_scree(title, df, problem_name, multiple_runs=False, xlabel='Number of C
 
     ax.axvline(x=min_point, linestyle="--", label="Min: {}".format(int(min_point)))
     ax.axvline(x=max_point, linestyle="--", label="Max: {}".format(int(max_point)))
+
     if kl.knee_x is not None:
         ax.axvline(x=kl.knee_x, linestyle="--", label="Knee: {}".format(kl.knee_x))
     else:
         ax.axvline(x=knee_point, linestyle="--", label="Knee: {}".format(knee_point))
 
-    ax.set_xticks(df.index.values, minor=False)
+    # ax.set_xticks(df.index.values, minor=False)
 
     plt.legend(loc="best")
 
@@ -248,6 +248,24 @@ def plot_sse(title, df, xlabel='Number of Clusters', ylabel='SSE'):
     plt.ylabel(ylabel)
     plt.grid()
     plt.tight_layout()
+
+    # ax = plt.gca()
+    #
+    # x_points = df.index.values
+    # y_points = df.iloc[:, 0]
+    #
+    # plt.plot(x_points, y_points, 'o-', linewidth=1, markersize=2)
+    #
+    # # knee_point = find_knee(y_points)
+    # kl = KneeLocator(x_points, y_points, curve='convex', direction='decreasing')
+    #
+    # if kl.knee_x is not None:
+    #     ax.axvline(x=kl.knee_x, linestyle="--", label="Knee: {}".format(kl.knee_x))
+    # # else:
+    # #     ax.axvline(x=knee_point, linestyle="--", label="Knee: {}".format(knee_point))
+    #
+    # ax.set_xticks(df.index.values, minor=False)
+
 
     plt.plot(df.index.values, df.iloc[:, 0], 'o-', linewidth=1, markersize=2)
     plt.legend(loc="best")
@@ -325,7 +343,8 @@ def plot_combined(title, df, data_columns, tsne_data=None, extra_data=None, extr
     if extra_data is not None and extra_data_name is not None:
         ex_ax = ax1.twinx()
         ex_ax.plot(extra_data.index.values, extra_data.iloc[:, 0], linewidth=1,
-                   label=extra_data_name)
+                   label=extra_data_name, color='purple')
+        ex_ax.yaxis.label.set_color('purple')
         ex_ax.set_ylabel(extra_data_name)
         ex_ax.tick_params('y')
 
@@ -395,7 +414,7 @@ def plot_sil_samples(title, df, n_clusters):
     ax.set_xlim([x_min - 0.05, x_max + 0.05])
     # The (n_clusters+1)*10 is for inserting blank space between silhouette
     # plots of individual clusters, to demarcate them clearly.
-    ax.set_ylim([0, df.shape[0]/2 + (n_clusters + 1) * 10])
+    ax.set_ylim([0, df.shape[0] / 2 + (n_clusters + 1) * 10])
 
     cluster_labels = df[df['type'] == 'Kmeans']['label'].astype(np.float).values
     # plt.ticklabel_format(style='sci', axis='x', scilimits=(-3,4))
@@ -421,7 +440,7 @@ def plot_sil_samples(title, df, n_clusters):
                          facecolor=color, edgecolor=color, alpha=0.7)
 
         # Label the silhouette plots with their cluster numbers at the middle
-        ax.text(x_min-0.02, y_lower + 0.5 * size_cluster_i, str(i))
+        ax.text(x_min - 0.02, y_lower + 0.5 * size_cluster_i, str(i))
 
         # Compute the new y_lower for next plot
         y_lower = y_upper + 10  # 10 for the 0 samples
@@ -537,14 +556,13 @@ def read_and_plot_sse(problem, file, output_dir):
         '{}/{}/{}_sse.png'.format(output_dir, problem['name'], ds_name),
         format='png', bbox_inches='tight', dpi=150)
 
-
 def read_and_plot_acc(problem, file, output_dir):
     ds_name, ds_readable_name = get_ds_name(file, acc_file_name_regex)
     logger.info("Plotting ACC for file {} to {} ({})".format(file, output_dir, ds_name))
 
     title = '{} - {}: Accuracy vs Number of Clusters'.format(ds_readable_name, problem['name'])
     df = pd.read_csv(file).set_index('k')
-    p = plot_sse(title, df)
+    p = plot_acc(title, df)
     p = watermark(p)
     p.savefig(
         '{}/{}/{}_acc.png'.format(output_dir, problem['name'], ds_name),
