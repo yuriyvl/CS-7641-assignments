@@ -6,7 +6,7 @@ from .base import BaseSolver, one_step_lookahead, EpisodeStats
 
 # Adapted from https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
 class QLearningSolver(BaseSolver):
-    def __init__(self, env, max_episodes, max_steps_per_episode=500, discount_factor=1.0, alpha=0.5, epsilon=0.1,
+    def __init__(self, env, max_episodes, max_steps_per_episode=10000, discount_factor=1.0, alpha=0.5, epsilon=0.1,
                  epsilon_decay=0.001, q_init=0, theta=0.0001, min_consecutive_sub_theta_episodes=10, verbose=False):
         self._env = env.unwrapped
 
