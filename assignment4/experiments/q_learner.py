@@ -33,11 +33,11 @@ class QLearnerExperiment(BaseExperiment):
         with open(grid_file_name, 'w') as f:
             f.write("params,time,steps,reward_mean,reward_median,reward_min,reward_max,reward_std\n")
 
-        alphas = [0.1, 0.5, 0.9]
-        q_inits = ['random', 0]
-        epsilons = [0.1, 0.3, 0.5]
+        alphas = [0.5]
+        q_inits = [0]
+        epsilons = [0.1]
         epsilon_decays = [0.0001]
-        discount_factors = np.round(np.linspace(0, 0.9, num=10), 2)
+        discount_factors = [1.0] #np.round(np.linspace(0, 0.9, num=10), 2)
         dims = len(discount_factors) * len(alphas) * len(q_inits) * len(epsilons) * len(epsilon_decays)
         self.log("Searching Q in {} dimensions".format(dims))
 
