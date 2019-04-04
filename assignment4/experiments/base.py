@@ -23,7 +23,7 @@ if not os.path.exists(OUTPUT_DIRECTORY):
 if not os.path.exists('{}/images'.format(OUTPUT_DIRECTORY)):
     os.makedirs('{}/images'.format(OUTPUT_DIRECTORY))
 
-MAX_STEP_COUNT = 2000
+MAX_STEP_COUNT = 5000
 
 
 class EvaluationStats(object):
@@ -220,8 +220,8 @@ class BaseExperiment(ABC):
                 optimal_policy = policy
 
             stats.add(policy, v, steps, step_time, reward, delta, converged)
-            # if self._verbose:
-            #     self.log("Step {}: delta={}, converged={}".format(step_count, delta, converged))
+            if self._verbose:
+                self.log("Step {}: delta={}, converged={}".format(step_count, delta, converged))
             step_count += 1
 
             if step_count % 250 == 0:
