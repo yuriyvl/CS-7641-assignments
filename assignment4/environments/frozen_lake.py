@@ -84,7 +84,7 @@ class RewardingFrozenLakeEnv(discrete.DiscreteEnv):
 
     metadata = {'render.modes': ['human', 'ansi']}
 
-    def __init__(self, desc=None, map_name="4x4", rewarding=True, step_reward=-1, hole_reward=-100, is_slippery=True):
+    def __init__(self, desc=None, map_name="4x4", rewarding=True, step_reward=-1, hole_reward=-100, is_slippery=False):
         if desc is None and map_name is None:
             raise ValueError('Must provide either desc or map_name')
         elif desc is None:
@@ -141,7 +141,7 @@ class RewardingFrozenLakeEnv(discrete.DiscreteEnv):
                                         rew = self.step_reward
                                     elif newletter == b'H':
                                         rew = self.hole_reward
-                                li.append((0.6 if b == a else 0.2, newstate, rew, done))
+                                li.append((0.8 if b == a else 0.1, newstate, rew, done))
                         else:
                             newrow, newcol = inc(row, col, a)
                             newstate = to_s(newrow, newcol)
