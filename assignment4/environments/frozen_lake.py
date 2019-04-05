@@ -101,7 +101,7 @@ class RewardingFrozenLakeEnv(discrete.DiscreteEnv):
 
     metadata = {'render.modes': ['human', 'ansi']}
 
-    def __init__(self, desc=None, map_name="4x4", rewarding=True, step_reward=-1, hole_reward=-100, is_slippery=False):
+    def __init__(self, desc=None, map_name="4x4", rewarding=True, step_reward=-1, hole_reward=-100, is_slippery=True):
         if desc is None and map_name is None:
             raise ValueError('Must provide either desc or map_name')
         elif desc is None:

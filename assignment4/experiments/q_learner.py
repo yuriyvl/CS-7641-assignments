@@ -17,7 +17,7 @@ if not os.path.exists(OUTPUT_DIRECTORY + '/images/Q'):
 
 class QLearnerExperiment(BaseExperiment):
     def __init__(self, details, verbose=False):
-        self.max_episodes = 5000
+        self.max_episodes = 20000
 
         super(QLearnerExperiment, self).__init__(details, verbose)
 
