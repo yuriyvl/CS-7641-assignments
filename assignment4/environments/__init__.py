@@ -64,11 +64,11 @@ def get_large_rewarding_no_reward_frozen_lake_environment():
     return gym.make('RewardingFrozenLakeNoRewards20x20-v0')
 
 def get_rewarding_with_reward_frozen_lake_environment():
-    return gym.make('RewardingFrozenLakeNoRewards8x8-v0')
+    return gym.make('RewardingFrozenLakeWithRewards8x8-v0')
 
 
 def get_large_rewarding_with_reward_frozen_lake_environment():
-    return gym.make('RewardingFrozenLakeNoRewards20x20-v0')
+    return gym.make('RewardingFrozenLakeWithRewards20x20-v0')
 
 
 def get_cliff_walking_environment():
