@@ -224,6 +224,10 @@ class BaseExperiment(ABC):
             #     self.log("Step {}: delta={}, converged={}".format(step_count, delta, converged))
             step_count += 1
 
+            if step_count % 250 == 0:
+                logger.info("Step {}: delta={}, converged={}".format(step_count, delta, converged))
+
+
         stats.elapsed_time = time.clock() - t
         stats.optimal_policy = stats.policies[-1]  # optimal_policy
         return stats

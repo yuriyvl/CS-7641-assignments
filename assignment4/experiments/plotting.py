@@ -220,10 +220,10 @@ def plot_reward_and_delta_vs_steps(title, df, xlabel="Steps", ylabel="Reward"):
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
 
-    lns1 = ax.plot(df.index.values, df['reward'], linewidth=1, label=ylabel)
+    lns1 = ax.plot(df.index.values, df['reward'], 'r-', linewidth=1, label=ylabel)
 
     ex_ax = ax.twinx()
-    lns2 = ex_ax.plot(df.index.values, df['delta'], linewidth=1, label='Delta')
+    lns2 = ex_ax.plot(df.index.values, df['delta'], 'b-',  linewidth=1, label='Delta')
     ex_ax.set_ylabel('Delta')
     ex_ax.tick_params('y')
 

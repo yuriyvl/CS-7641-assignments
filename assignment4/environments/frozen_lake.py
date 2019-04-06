@@ -27,6 +27,23 @@ MAPS = {
         "FHFFHFHF",
         "FFFHFFFG"
     ],
+    "15x15": [
+        "SFFFFFHFFFFFFFF",
+        "FFFFFFFFFFFFHFF",
+        "FFHFFFFFHFFFFFF",
+        "FFFFHFFFFFFFHFF",
+        "FFFFFFFFFFFFHFF",
+        "FFFFHFFHFFFFHFF",
+        "FFFFHFFFFFFFHFF",
+        "FFFFFFFFHHHHHFF",
+        "HHHFHFFFFFFFHFF",
+        "FFFFHFFHHFFFHFF",
+        "FFFFFFFFFFFFHFF",
+        "FFFFHFFFHFFFHFF",
+        "FFFFFFFFFFFFFFF",
+        "FHFHFHFFFFFFFFF",
+        "FFHFFFFFFFHHHFG"
+    ],
     "20x20": [
         "SFFFFFFHHHFFFFFFFFFF",
         "FFFFFFFFFFFFFFFFHHFF",
