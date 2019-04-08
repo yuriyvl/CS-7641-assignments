@@ -9,7 +9,7 @@ import numpy as np
 
 from abc import ABC, abstractmethod
 
-from .plotting import plot_policy_map, plot_value_map
+from .plotting import plot_policy_map, plot_policy_map1, plot_policy_map_combined, plot_value_map, plot_value_map1, plot_value_map2
 import solvers
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -129,6 +129,10 @@ class ExperimentStats(object):
             policy = np.reshape(np.argmax(self.policies[-1], axis=1), map_desc.shape)
             v = self.vs[-1].reshape(map_desc.shape)
 
+            name = details.env_readable_name.replace(' ', '_')
+            np.savetxt('{}/Q/policy-{}-{}-{}.txt'.format(OUTPUT_DIRECTORY, name, experiment, step_preamble), policy)
+            np.savetxt('{}/Q/v-{}-{}-{}.txt'.format(OUTPUT_DIRECTORY, name, experiment, step_preamble), v)
+
             policy_file_name = file_name_base.format('Policy', 'Last')
             value_file_name = file_name_base.format('Value', 'Last')
             title = '{}: {} - {} {}'.format(details.env_readable_name, experiment, 'Last', step_preamble)
@@ -137,8 +141,24 @@ class ExperimentStats(object):
             p.savefig(policy_file_name, format='png', dpi=150)
             p.close()
 
+            p = plot_policy_map1(title, policy, map_desc, color_map, direction_map)
+            p.savefig(file_name_base.format('Policy', 'Last-1'), format='png', dpi=150)
+            p.close()
+
+            p = plot_policy_map_combined(title, policy, v, map_desc, color_map, direction_map)
+            p.savefig(file_name_base.format('Policy', 'Last-2'), format='png', dpi=150)
+            p.close()
+
             p = plot_value_map(title, v, map_desc, color_map)
             p.savefig(value_file_name, format='png', dpi=150)
+            p.close()
+
+            p = plot_value_map1(title, v, map_desc, color_map)
+            p.savefig(file_name_base.format('Value', 'Last-1'), format='png', dpi=150)
+            p.close()
+
+            p = plot_value_map2(title, v, map_desc, color_map)
+            p.savefig(file_name_base.format('Value', 'Last-2'), format='png', dpi=150)
             p.close()
         else:
             l = len(self.policies)
@@ -148,6 +168,9 @@ class ExperimentStats(object):
                 if i % step_size == 0 or i == l-1:
                     policy = np.reshape(np.argmax(policy, axis=1), map_desc.shape)
                     v = self.vs[i].reshape(map_desc.shape)
+
+                    np.savetxt('{}/Q/policy-{}-{}-{}.txt'.format(OUTPUT_DIRECTORY, details.env_readable_name, experiment, step_preamble), policy)
+                    np.savetxt('{}/Q/v-{}-{}-{}.txt'.format(OUTPUT_DIRECTORY, details.env_readable_name, experiment, step_preamble), v)
 
                     file_name = file_name_base.format('Policy', i)
                     value_file_name = file_name_base.format('Value', i)
