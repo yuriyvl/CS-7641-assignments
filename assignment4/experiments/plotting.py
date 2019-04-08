@@ -132,6 +132,7 @@ def plot_policy_map(title, policy, map_desc, color_map, direction_map):
     font_size = 'x-large'
     if policy.shape[1] > 16:
         font_size = 'small'
+
     plt.title(title)
     for i in range(policy.shape[0]):
         for j in range(policy.shape[1]):
@@ -149,6 +150,186 @@ def plot_policy_map(title, policy, map_desc, color_map, direction_map):
     plt.axis('off')
     plt.xlim((0, policy.shape[1]))
     plt.ylim((0, policy.shape[0]))
+    plt.tight_layout()
+
+    return watermark(plt)
+
+def plot_policy_map1(title, policy, map_desc, color_map, direction_map):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, xlim=(0, policy.shape[1]), ylim=(0, policy.shape[0]))
+    font_size = 'x-large'
+    if policy.shape[1] > 16:
+        font_size = 'small'
+
+    plt.title(title)
+    for i in range(policy.shape[0]):
+        for j in range(policy.shape[1]):
+            y = policy.shape[0] - i - 1
+            x = j
+            p = plt.Rectangle([x, y], 1, 1)
+            p.set_facecolor(color_map[map_desc[i, j]])
+            ax.add_patch(p)
+
+            if map_desc[i, j] == b'F' or map_desc[i, j] == b'R':
+                text = ax.text(x+0.5, y+0.5, direction_map[policy[i, j]], weight='bold', size=font_size,
+                               horizontalalignment='center', verticalalignment='center', color='w')
+                text.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),
+                                       path_effects.Normal()])
+            elif map_desc[i, j] == b'S':
+                text2 = ax.text(x+0.5, y+0.5, 'Start', size=font_size,
+                                horizontalalignment='center', verticalalignment='center', color='w')
+                text2.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),
+                                        path_effects.Normal()])
+            elif map_desc[i, j] == b'G':
+                text2 = ax.text(x+0.5, y+0.5, 'Goal', size=font_size,
+                                horizontalalignment='center', verticalalignment='center', color='w')
+                text2.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),
+                                        path_effects.Normal()])
+
+    plt.axis('off')
+    plt.xlim((0, policy.shape[1]))
+    plt.ylim((0, policy.shape[0]))
+    plt.tight_layout()
+
+    return watermark(plt)
+
+def plot_policy_map_combined(title, policy, v, map_desc, color_map, direction_map):
+    font_size = 'x-large'
+    if policy.shape[1] > 10:
+        font_size = 'small'
+
+    fig, ax = plt.subplots()
+    im = ax.imshow(v, cmap=plt.cm.Blues, interpolation='nearest')
+    plt.colorbar(im)
+    plt.title(title)
+
+    for i in range(policy.shape[0]):
+        for j in range(policy.shape[1]):
+            #y = policy.shape[0] - i - 1
+            y = i
+            x = j
+            if map_desc[i, j] != b'F' and map_desc[i, j] != b'R':
+                p = plt.Rectangle([x-.5, y-.5], 1, 1)
+                p.set_facecolor(color_map[map_desc[i, j]])
+                ax.add_patch(p)
+
+            if map_desc[i, j] == b'F' or map_desc[i, j] == b'R':
+                text2 = ax.text(x, y, direction_map[policy[i, j]], size=font_size,
+                                horizontalalignment='center', verticalalignment='center', color='w')
+                text2.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),
+                                        path_effects.Normal()])
+            elif map_desc[i, j] == b'S':
+                text2 = ax.text(x, y, 'Start', size=font_size,
+                                horizontalalignment='center', verticalalignment='center', color='w')
+                text2.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),
+                                        path_effects.Normal()])
+            elif map_desc[i, j] == b'G':
+                text2 = ax.text(x, y, 'Goal', size=font_size,
+                                horizontalalignment='center', verticalalignment='center', color='w')
+                text2.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),
+                                        path_effects.Normal()])
+
+    plt.axis('off')
+    #plt.xlim((0, policy.shape[1]))
+    #plt.ylim((0, policy.shape[0]))
+    plt.tight_layout()
+    return plt
+
+def plot_value_map2(title, v, map_desc, color_map):
+    font_size = 'x-large'
+    if v.shape[1] > 10:
+        font_size = 'small'
+
+    fig, ax = plt.subplots()
+    im = ax.imshow(v, cmap=plt.cm.Blues, interpolation='nearest')
+    plt.colorbar(im)
+    plt.title(title)
+
+    for i in range(v.shape[0]):
+        for j in range(v.shape[1]):
+            #y = v.shape[0] - i - 1
+            y = i
+            x = j
+            if map_desc[i, j] != b'F' and map_desc[i, j] != b'R':
+                p = plt.Rectangle([x-.5, y-.5], 1, 1)
+                p.set_facecolor(color_map[map_desc[i, j]])
+                ax.add_patch(p)
+
+            value = np.round(v[i, j], 2)
+
+            if map_desc[i, j] == b'F' or map_desc[i, j] == b'R':
+                text2 = ax.text(x, y, int(value), size=font_size,
+                                horizontalalignment='center', verticalalignment='center', color='w')
+                text2.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),
+                                        path_effects.Normal()])
+            elif map_desc[i, j] == b'S':
+                text2 = ax.text(x, y, 'Start', size=font_size,
+                                horizontalalignment='center', verticalalignment='center', color='w')
+                text2.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),
+                                        path_effects.Normal()])
+            elif map_desc[i, j] == b'G':
+                text2 = ax.text(x, y, 'Goal', size=font_size,
+                                horizontalalignment='center', verticalalignment='center', color='w')
+                text2.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),
+                                        path_effects.Normal()])
+
+    plt.axis('off')
+    #plt.xlim((0, v.shape[1]))
+    #plt.ylim((0, v.shape[0]))
+    plt.tight_layout()
+    return plt
+
+def plot_value_map1(title, v, map_desc, color_map):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, xlim=(0, v.shape[1]), ylim=(0, v.shape[0]))
+    font_size = 'x-large'
+    if v.shape[1] > 16:
+        font_size = 'small'
+
+    v_min = np.min(v)
+    v_max = np.max(v)
+    bins = np.linspace(v_min, v_max, 100)
+    v_red = np.digitize(v, bins)/100.0
+    for i in range(v.shape[0]):
+        for j in range(v.shape[1]):
+            value = np.round(v[i, j], 2)
+            if len(str(value)) > 4:
+                font_size = 'small'
+
+    plt.title(title)
+    for i in range(v.shape[0]):
+        for j in range(v.shape[1]):
+            y = v.shape[0] - i - 1
+            x = j
+            p = plt.Rectangle([x, y], 1, 1)
+            red = v_red[i, j]
+            if map_desc[i, j] == b'F' or map_desc[i, j] == b'R':
+                p.set_facecolor((1.0-(red*.9), 1.0-(red*.6), 1.0-(red*.1)))
+            else:
+                p.set_facecolor(color_map[map_desc[i, j]])
+            ax.add_patch(p)
+
+            value = np.round(v[i, j], 2)
+
+            if map_desc[i, j] == b'F' or map_desc[i, j] == b'R':
+                text2 = ax.text(x+0.5, y+0.5, int(value), size=font_size,
+                                horizontalalignment='center', verticalalignment='center', color=(red, red, 0))
+                text2.set_path_effects([path_effects.Stroke(linewidth=1, foreground='black'),
+                                        path_effects.Normal()])
+            elif map_desc[i, j] == b'S':
+                text2 = ax.text(x+0.5, y+0.5, 'Start', size=font_size,
+                                horizontalalignment='center', verticalalignment='center', color='w')
+                text2.set_path_effects([path_effects.Stroke(linewidth=1, foreground='black'),
+                                        path_effects.Normal()])
+            elif map_desc[i, j] == b'G':
+                text2 = ax.text(x+0.5, y+0.5, 'Goal', size=font_size,
+                                horizontalalignment='center', verticalalignment='center', color='w')
+                text2.set_path_effects([path_effects.Stroke(linewidth=1, foreground='black'),
+                                        path_effects.Normal()])
+
+    plt.axis('off')
+    plt.xlim((0, v.shape[1]))
+    plt.ylim((0, v.shape[0]))
     plt.tight_layout()
 
     return watermark(plt)
