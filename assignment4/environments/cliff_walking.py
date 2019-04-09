@@ -103,7 +103,7 @@ class WindyCliffWalkingEnv(discrete.DiscreteEnv):
         # else:
         #     new_position = np.array(current) + np.array(delta)
 
-        new_position = np.array(current) + np.array(delta) #+ (np.array([1, 0]) * winds[tuple(current)])
+        new_position = np.array(current) + np.array(delta) + (np.array([1, 0]) * winds[tuple(current)])
         new_position = self._limit_coordinates(new_position).astype(int)
         new_state = np.ravel_multi_index(tuple(new_position), self.shape)
         if self._cliff[tuple(new_position)]:
