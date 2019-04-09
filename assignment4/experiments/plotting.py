@@ -70,7 +70,7 @@ def plot_episode_stats(title_base, stats, smoothing_window=50):
     plt.subplot(121)
     plt.grid()
     plt.tight_layout()
-    plt.plot(stats['length'])
+    plt.plot(stats['length'], linewidth=.5)
     plt.xlabel("Episode")
     plt.ylabel("Episode Length")
     plt.title("Episode Length over Time")
@@ -91,7 +91,7 @@ def plot_episode_stats(title_base, stats, smoothing_window=50):
     plt.subplot(121)
     plt.grid()
     plt.tight_layout()
-    plt.plot(rewards_smoothed)
+    plt.plot(rewards_smoothed, linewidth=.5)
     plt.xlabel("Episode")
     plt.ylabel("Episode Reward (Smoothed)")
     plt.title("Episode Reward over Time ({})".format(smoothing_window))
@@ -110,7 +110,7 @@ def plot_episode_stats(title_base, stats, smoothing_window=50):
     plt.grid()
     plt.tight_layout()
     time_steps = np.cumsum(stats['time'])
-    plt.plot(time_steps, np.arange(len(stats['time'])))
+    plt.plot(time_steps, np.arange(len(stats['time'])), linewidth=1)
     plt.xlabel("Time Steps")
     plt.ylabel("Episode")
     plt.title("Episode per time step")
@@ -200,7 +200,11 @@ def plot_policy_map_combined(title, policy, v, map_desc, color_map, direction_ma
 
     fig, ax = plt.subplots()
     im = ax.imshow(v, cmap=plt.cm.Blues, interpolation='nearest')
-    plt.colorbar(im)
+    #plt.colorbar(im)
+    #colorbar(im)
+    fig.colorbar(im, ax=ax)
+    if policy.shape[1] == 12:
+        ax.set_aspect(3)
     plt.title(title)
 
     for i in range(policy.shape[0]):
@@ -235,6 +239,15 @@ def plot_policy_map_combined(title, policy, v, map_desc, color_map, direction_ma
     plt.tight_layout()
     return plt
 
+# From: https://joseph-long.com/writing/colorbars/
+#def colorbar(mappable):
+#    from mpl_toolkits.axes_grid1 import make_axes_locatable
+#    ax = mappable.axes
+#    fig = ax.figure
+#    divider = make_axes_locatable(ax)
+#    cax = divider.append_axes("right", size="5%", pad=0.05)
+#    return fig.colorbar(mappable, cax=cax)
+
 def plot_value_map2(title, v, map_desc, color_map):
     font_size = 'x-large'
     if v.shape[1] > 10:
@@ -242,7 +255,10 @@ def plot_value_map2(title, v, map_desc, color_map):
 
     fig, ax = plt.subplots()
     im = ax.imshow(v, cmap=plt.cm.Blues, interpolation='nearest')
-    plt.colorbar(im)
+    #plt.colorbar(im)
+    fig.colorbar(im, ax=ax)
+    if v.shape[1] == 12:
+        ax.set_aspect(3)
     plt.title(title)
 
     for i in range(v.shape[0]):
@@ -255,10 +271,15 @@ def plot_value_map2(title, v, map_desc, color_map):
                 p.set_facecolor(color_map[map_desc[i, j]])
                 ax.add_patch(p)
 
-            value = np.round(v[i, j], 2)
+            #value = np.round(v[i, j], 2)
+            #if v.shape[1] != 12:
+            #    value = int(v[i, j])
+            #else:
+            #    value = np.round(v[i, j], 1)
+            value = int(np.rint(v[i, j]))
 
             if map_desc[i, j] == b'F' or map_desc[i, j] == b'R':
-                text2 = ax.text(x, y, int(value), size=font_size,
+                text2 = ax.text(x, y, value, size=font_size,
                                 horizontalalignment='center', verticalalignment='center', color='w')
                 text2.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),
                                         path_effects.Normal()])
@@ -297,6 +318,7 @@ def plot_value_map1(title, v, map_desc, color_map):
                 font_size = 'small'
 
     plt.title(title)
+
     for i in range(v.shape[0]):
         for j in range(v.shape[1]):
             y = v.shape[0] - i - 1
@@ -309,10 +331,11 @@ def plot_value_map1(title, v, map_desc, color_map):
                 p.set_facecolor(color_map[map_desc[i, j]])
             ax.add_patch(p)
 
-            value = np.round(v[i, j], 2)
+            #value = np.round(v[i, j], 1)
+            value = int(np.rint(v[i, j]))
 
             if map_desc[i, j] == b'F' or map_desc[i, j] == b'R':
-                text2 = ax.text(x+0.5, y+0.5, int(value), size=font_size,
+                text2 = ax.text(x+0.5, y+0.5, value, size=font_size,
                                 horizontalalignment='center', verticalalignment='center', color=(red, red, 0))
                 text2.set_path_effects([path_effects.Stroke(linewidth=1, foreground='black'),
                                         path_effects.Normal()])
@@ -361,7 +384,8 @@ def plot_value_map(title, v, map_desc, color_map):
             p.set_facecolor(color_map[map_desc[i, j]])
             ax.add_patch(p)
 
-            value = np.round(v[i, j], 2)
+            #value = np.round(v[i, j], 2)
+            value = int(np.rint(v[i, j]))
 
             red = v_red[i, j]
             text2 = ax.text(x+0.5, y+0.5, value, size=font_size,
@@ -386,7 +410,7 @@ def plot_time_vs_steps(title, df, xlabel="Steps", ylabel="Time (s)"):
     plt.grid()
     plt.tight_layout()
 
-    plt.plot(df.index.values, df['time'], '-', linewidth=1)
+    plt.plot(df.index.values, df['time'], '-', linewidth=.5)
     plt.legend(loc="best")
 
     return watermark(plt)
@@ -401,10 +425,12 @@ def plot_reward_and_delta_vs_steps(title, df, xlabel="Steps", ylabel="Reward"):
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
 
-    lns1 = ax.plot(df.index.values, df['reward'], 'r-', linewidth=1, label=ylabel)
+    #lns1 = ax.plot(df.index.values, df['reward'], 'r-', linewidth=.5, label=ylabel)
+    lns1 = ax.scatter(df.index.values, df['reward'], c='r',  marker='.', linewidth=.5, label=ylabel)
 
     ex_ax = ax.twinx()
-    lns2 = ex_ax.plot(df.index.values, df['delta'], 'b-',  linewidth=1, label='Delta')
+    #lns2 = ex_ax.plot(df.index.values, df['delta'], 'b-',  linewidth=.5, label='Delta')
+    lns2 = ex_ax.scatter(df.index.values, df['delta'], c='b',  marker='.', linewidth=.5, label='Delta')
     ex_ax.set_ylabel('Delta')
     ex_ax.tick_params('y')
 
@@ -413,9 +439,11 @@ def plot_reward_and_delta_vs_steps(title, df, xlabel="Steps", ylabel="Reward"):
 
     f.tight_layout()
 
-    lns = lns1 + lns2
-    labs = [l.get_label() for l in lns]
-    ax.legend(lns, labs, loc=0)
+    #lns = lns1 + lns2
+    #lns = lns1
+    #labs = [l.get_label() for l in lns]
+    #ax.legend(lns, labs, loc=0)
+    plt.legend((lns1, lns2), (ylabel, 'Delta'), scatterpoints=1)
 
     return watermark(plt)
 
