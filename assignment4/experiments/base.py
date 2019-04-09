@@ -130,8 +130,8 @@ class ExperimentStats(object):
             v = self.vs[-1].reshape(map_desc.shape)
 
             name = details.env_readable_name.replace(' ', '_')
-            np.savetxt('{}/Q/policy-{}-{}-{}.txt'.format(OUTPUT_DIRECTORY, name, experiment, step_preamble), policy)
-            np.savetxt('{}/Q/v-{}-{}-{}.txt'.format(OUTPUT_DIRECTORY, name, experiment, step_preamble), v)
+            np.savetxt('{}/Q/policy-{}-{}-{}.txt'.format(OUTPUT_DIRECTORY, name, experiment.replace(' ', '_'), step_preamble), policy)
+            np.savetxt('{}/Q/v-{}-{}-{}.txt'.format(OUTPUT_DIRECTORY, name, experiment.replace(' ', '_'), step_preamble), v)
 
             policy_file_name = file_name_base.format('Policy', 'Last')
             value_file_name = file_name_base.format('Value', 'Last')
@@ -169,8 +169,9 @@ class ExperimentStats(object):
                     policy = np.reshape(np.argmax(policy, axis=1), map_desc.shape)
                     v = self.vs[i].reshape(map_desc.shape)
 
-                    np.savetxt('{}/Q/policy-{}-{}-{}.txt'.format(OUTPUT_DIRECTORY, details.env_readable_name, experiment, step_preamble), policy)
-                    np.savetxt('{}/Q/v-{}-{}-{}.txt'.format(OUTPUT_DIRECTORY, details.env_readable_name, experiment, step_preamble), v)
+                    name = details.env_readable_name.replace(' ', '_')
+                    np.savetxt('{}/Q/policy-{}-{}-{}.txt'.format(OUTPUT_DIRECTORY, name, experiment.replace(' ', '_'), step_preamble), policy)
+                    np.savetxt('{}/Q/v-{}-{}-{}.txt'.format(OUTPUT_DIRECTORY, name, experiment.replace(' ', '_'), step_preamble), v)
 
                     file_name = file_name_base.format('Policy', i)
                     value_file_name = file_name_base.format('Value', i)
