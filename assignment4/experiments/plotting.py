@@ -72,7 +72,8 @@ def plot_episode_stats(title_base, stats, smoothing_window=50):
     plt.tight_layout()
     plt.plot(stats['length'], linewidth=.5)
     plt.xlabel("Episode")
-    plt.ylabel("Episode Length")
+    #plt.ylabel("Episode Length")
+    plt.ylabel("Steps per Episode")
     plt.title("Episode Length over Time")
     plt.subplot(122)
     plt.hist(stats['length'], zorder=3)
@@ -80,7 +81,13 @@ def plot_episode_stats(title_base, stats, smoothing_window=50):
     plt.xlabel("Episode Length")
     plt.ylabel("Count")
     plt.tight_layout()
-    plt.title(title_base.format("Episode Length (Histogram)"))
+    plt.title("Episode Length (Histogram)")
+
+    st = plt.suptitle(title_base)
+    # shift subplots down:
+    st.set_y(0.95)
+    fig1.subplots_adjust(top=0.85)
+
     fig1 = watermark(fig1)
 
     # Plot the episode reward over time
@@ -101,7 +108,13 @@ def plot_episode_stats(title_base, stats, smoothing_window=50):
     plt.grid(zorder=0)
     plt.xlabel("Episode Reward")
     plt.ylabel("Count")
-    plt.title(title_base.format("Episode Reward (Histogram)"))
+    plt.title("Episode Reward (Histogram)")
+
+    st = plt.suptitle(title_base)
+    # shift subplots down:
+    st.set_y(0.95)
+    fig2.subplots_adjust(top=0.85)
+
     fig2 = watermark(fig2)
 
     # Plot time steps and episode number
@@ -120,7 +133,13 @@ def plot_episode_stats(title_base, stats, smoothing_window=50):
     plt.grid(zorder=0)
     plt.xlabel("Time Step")
     plt.ylabel("Count")
-    plt.title(title_base.format("Episode Time (Histogram)"))
+    plt.title("Episode Time (Histogram)")
+
+    st = plt.suptitle(title_base)
+    # shift subplots down:
+    st.set_y(0.95)
+    fig3.subplots_adjust(top=0.85)
+
     fig3 = watermark(fig3)
 
     return fig1, fig2, fig3
@@ -200,11 +219,10 @@ def plot_policy_map_combined(title, policy, v, map_desc, color_map, direction_ma
 
     fig, ax = plt.subplots()
     im = ax.imshow(v, cmap=plt.cm.Blues, interpolation='nearest')
-    #plt.colorbar(im)
-    #colorbar(im)
-    fig.colorbar(im, ax=ax)
     if policy.shape[1] == 12:
-        ax.set_aspect(3)
+        fig.colorbar(im, ax=ax, pad=.05, fraction=.05, orientation='horizontal')
+    else:
+        fig.colorbar(im, ax=ax)
     plt.title(title)
 
     for i in range(policy.shape[0]):
@@ -239,15 +257,6 @@ def plot_policy_map_combined(title, policy, v, map_desc, color_map, direction_ma
     plt.tight_layout()
     return plt
 
-# From: https://joseph-long.com/writing/colorbars/
-#def colorbar(mappable):
-#    from mpl_toolkits.axes_grid1 import make_axes_locatable
-#    ax = mappable.axes
-#    fig = ax.figure
-#    divider = make_axes_locatable(ax)
-#    cax = divider.append_axes("right", size="5%", pad=0.05)
-#    return fig.colorbar(mappable, cax=cax)
-
 def plot_value_map2(title, v, map_desc, color_map):
     font_size = 'x-large'
     if v.shape[1] > 10:
@@ -255,10 +264,10 @@ def plot_value_map2(title, v, map_desc, color_map):
 
     fig, ax = plt.subplots()
     im = ax.imshow(v, cmap=plt.cm.Blues, interpolation='nearest')
-    #plt.colorbar(im)
-    fig.colorbar(im, ax=ax)
     if v.shape[1] == 12:
-        ax.set_aspect(3)
+        fig.colorbar(im, ax=ax, pad=.05, fraction=.05, orientation='horizontal')
+    else:
+        fig.colorbar(im, ax=ax)
     plt.title(title)
 
     for i in range(v.shape[0]):
@@ -425,12 +434,10 @@ def plot_reward_and_delta_vs_steps(title, df, xlabel="Steps", ylabel="Reward"):
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
 
-    #lns1 = ax.plot(df.index.values, df['reward'], 'r-', linewidth=.5, label=ylabel)
-    lns1 = ax.scatter(df.index.values, df['reward'], c='r',  marker='.', linewidth=.5, label=ylabel)
+    lns1 = ax.plot(df.index.values, df['reward'], 'r-', linewidth=.5, label=ylabel)
 
     ex_ax = ax.twinx()
-    #lns2 = ex_ax.plot(df.index.values, df['delta'], 'b-',  linewidth=.5, label='Delta')
-    lns2 = ex_ax.scatter(df.index.values, df['delta'], c='b',  marker='.', linewidth=.5, label='Delta')
+    lns2 = ex_ax.plot(df.index.values, df['delta'], 'b-',  linewidth=.5, label='Delta')
     ex_ax.set_ylabel('Delta')
     ex_ax.tick_params('y')
 
@@ -439,11 +446,35 @@ def plot_reward_and_delta_vs_steps(title, df, xlabel="Steps", ylabel="Reward"):
 
     f.tight_layout()
 
-    #lns = lns1 + lns2
-    #lns = lns1
-    #labs = [l.get_label() for l in lns]
-    #ax.legend(lns, labs, loc=0)
-    plt.legend((lns1, lns2), (ylabel, 'Delta'), scatterpoints=1)
+    lns = lns1 + lns2
+    labs = [l.get_label() for l in lns]
+    ax.legend(lns, labs, loc=0)
+
+    return watermark(plt)
+
+
+def plot_reward_and_delta_vs_steps_scatter(title, df, xlabel="Steps", ylabel="Reward"):
+    plt.close()
+    plt.figure()
+
+    f, (ax) = plt.subplots(1, 1)
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+
+    lns1 = ax.scatter(df.index.values, df['reward'], c='r',  marker='1', linewidth=.5, label=ylabel)
+
+    ex_ax = ax.twinx()
+    lns2 = ex_ax.scatter(df.index.values, df['delta'], c='b',  marker='+', linewidth=.5, label='Delta')
+    ex_ax.set_ylabel('Delta')
+    ex_ax.tick_params('y')
+
+    ax.grid()
+    ax.axis('tight')
+
+    f.tight_layout()
+
+    plt.legend((lns1, lns2), (ylabel, 'Delta'), scatterpoints=1, loc='best')
 
     return watermark(plt)
 
@@ -652,9 +683,16 @@ def plot_data(data_files, envs, base_dir):
             p.savefig(file_name, format='png', dpi=150)
             p.close()
 
+            file_name = '{}/{}/{}_reward_delta_scatter.png'.format(base_dir, problem_name, mdp)
+            p = plot_reward_and_delta_vs_steps_scatter(title, df, ylabel=reward_term, xlabel=step_term)
+            p = watermark(p)
+            p.savefig(file_name, format='png', dpi=150)
+            p.close()
+
             if problem_name == 'Q' and 'episode_file' in mdp_files:
-                title = '{}: {} - {}'.format(env['readable_name'], problem_name_to_descriptive_name(problem_name),
-                                             '{}')
+                #title = '{}: {} - {}'.format(env['readable_name'], problem_name_to_descriptive_name(problem_name),
+                #                             '{}')
+                title = '{}: {}'.format(env['readable_name'], problem_name_to_descriptive_name(problem_name))
                 episode_df = pd.read_csv(mdp_files['episode_file'])
                 q_length, q_reward, q_time = plot_episode_stats(title, episode_df)
                 file_base = '{}/{}/{}_{}.png'.format(base_dir, problem_name, mdp, '{}')
