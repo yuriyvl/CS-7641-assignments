@@ -79,11 +79,11 @@ if __name__ == '__main__':
         #     'name': 'frozen_lake',
         #     'readable_name': 'Frozen Lake (8x8)',
         # },
-        # {
-        #     'env': environments.get_large_rewarding_with_reward_frozen_lake_environment(),
-        #     'name': 'large_frozen_lake',
-        #     'readable_name': 'Frozen Lake (15x15)',
-        # },
+        {
+            'env': environments.get_large_rewarding_with_reward_frozen_lake_environment(),
+            'name': 'large_frozen_lake',
+            'readable_name': 'Frozen Lake (15x15)',
+        },
         # {
         #     'env': environments.get_windy_cliff_walking_environment(),
         #     'name': 'cliff_walking',
