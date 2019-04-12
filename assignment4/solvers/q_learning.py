@@ -52,7 +52,6 @@ class QLearningSolver(BaseSolver):
         episode_steps = 0
         alpha = self._alphas[self._steps]
 
-
         for t in range(self._max_steps_per_episode + 1):
             # Take a step
 
@@ -76,7 +75,7 @@ class QLearningSolver(BaseSolver):
             self._Q[state, action] += alpha * td_delta
 
             total_reward += reward
-            self._last_delta = max(self._last_delta, td_delta)
+            self._last_delta = abs(alpha * td_delta)
 
             episode_steps += 1
             if done:
