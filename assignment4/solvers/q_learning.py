@@ -7,7 +7,8 @@ from .base import BaseSolver, one_step_lookahead, EpisodeStats
 # Adapted from https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
 class QLearningSolver(BaseSolver):
     def __init__(self, env, max_episodes, max_steps_per_episode=15000, discount_factor=1.0, alpha=0.5, epsilon=0.1,
-                 epsilon_decay=0.001, q_init=0, theta=0.001, min_consecutive_sub_theta_episodes=10, verbose=False):
+                 epsilon_decay=0.001, q_init=0, theta=0.001, min_consecutive_sub_theta_episodes=10, verbose=False,
+                 policy_type='softmax'):
         self._env = env.unwrapped
 
         self._max_episodes = max_episodes
@@ -27,6 +28,10 @@ class QLearningSolver(BaseSolver):
         self._last_delta = 0
         self._theta = theta
         self._stats = EpisodeStats(max_episodes)
+        self._policy_type = policy_type
+
+        self._beta = self._init_beta = 0.0
+        self._beta_inc = 0.02
 
         # We want to wait for a few consecutive episodes to be below theta before we consider the model converged
         self._consecutive_sub_theta_episodes = 0
@@ -47,11 +52,14 @@ class QLearningSolver(BaseSolver):
         episode_steps = 0
         alpha = self._alphas[self._steps]
 
-        for t in range(self._max_steps_per_episode+1):
+        for t in range(self._max_steps_per_episode + 1):
             # Take a step
-            action_probs = self._policy_function(state)
-            # TODO: Which one?
-            action = np.random.choice(np.arange(len(action_probs)), p=action_probs)
+
+            if self._policy_type == 'softmax':
+                action = self._get_softmax_policy(state, self._beta)
+            else:
+                action = self._get_epsilon_greedy_policy(state)
+
             next_state, reward, done, _ = self._env.step(action)
 
             # Update statistics
@@ -75,9 +83,12 @@ class QLearningSolver(BaseSolver):
 
             state = next_state
 
-        # Exponentially decay epsilon
-        self._epsilon = self._min_epsilon + (self._initial_epsilon - self._min_epsilon) * \
-                        np.exp(-self._epsilon_decay*self._steps)
+        if self._policy_type == 'epsilon_greedy':
+            # Exponentially decay epsilon
+            self._epsilon = self._min_epsilon + (self._initial_epsilon - self._min_epsilon) * \
+                            np.exp(-self._epsilon_decay * self._steps)
+        else:
+            self._beta = self._init_beta + self._steps * self._beta_inc
 
         if self._verbose:
             self.log("Step {}: alpha={}, epsilon={}".format(self._steps, alpha, self._epsilon))
@@ -92,7 +103,7 @@ class QLearningSolver(BaseSolver):
         self._steps += 1
 
         return self.get_policy(), self.get_value(), self._steps, self._step_times[-1], \
-            total_reward/episode_steps, self._last_delta, self.has_converged()
+               total_reward / episode_steps, self._last_delta, self.has_converged()
 
     def reset(self):
         self._init_q()
@@ -142,11 +153,27 @@ class QLearningSolver(BaseSolver):
 
     def _init_q(self):
         if self._q_init == 'random':
-            self._Q = np.random.rand(self._env.observation_space.n, self._env.action_space.n)/1000.0
+            self._Q = np.random.rand(self._env.observation_space.n, self._env.action_space.n) / 1000.0
         elif int(self._q_init) == 0:
             self._Q = np.zeros(shape=(self._env.observation_space.n, self._env.action_space.n))
         else:
             self._Q = np.full((self._env.observation_space.n, self._env.action_space.n), float(self._q_init))
+
+    def _softmax(self, q_value, beta=1.0):
+        assert beta >= 0.0
+        q_tilde = q_value - np.max(q_value)
+        factors = np.exp(beta * q_tilde)
+        return factors / np.sum(factors)
+
+    def _get_softmax_policy(self, curr_s, beta=1.0):
+        prob_a = self._softmax(self._Q[curr_s], beta=beta)
+        cumsum_a = np.cumsum(prob_a)
+        return np.where(np.random.rand() < cumsum_a)[0][0]
+
+    def _get_epsilon_greedy_policy(self, observation):
+        action_probs = self._policy_function(observation)
+        action = np.random.choice(np.arange(len(action_probs)), p=action_probs)
+        return action
 
     def _policy_function(self, observation):
         A = np.ones(self._env.action_space.n, dtype=float) * self._epsilon / self._env.action_space.n
@@ -170,9 +197,11 @@ class QLearningSolver(BaseSolver):
             the probabilities for each action in the form of a numpy array of length nA.
 
         """
+
         def policy_fn(observation):
             A = np.ones(self._env.action_space.n, dtype=float) * self._epsilon / self._env.action_space.n
             best_action = np.argmax(self._Q[observation])
             A[best_action] += (1.0 - self._epsilon)
             return A
+
         return policy_fn

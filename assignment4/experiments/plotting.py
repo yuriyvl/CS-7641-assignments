@@ -60,88 +60,80 @@ def watermark(p):
                ha='right', va='bottom', alpha=0.2)
     return p
 
-
 def plot_episode_stats(title_base, stats, smoothing_window=50):
     # Trim the DF down based on the episode lengths
     stats = stats[stats['length'] > 0]
-
     # Plot the episode length over time, both as a line and histogram
-    fig1 = plt.figure(figsize=(10, 5))
-    plt.subplot(121)
+    # fig1 = plt.figure(figsize=(10, 5))
+    # plt.subplot(121)
+    fig1 = plt.figure()
     plt.grid()
-    plt.tight_layout()
+    # plt.tight_layout()
     plt.plot(stats['length'], linewidth=.5)
     plt.xlabel("Episode")
     #plt.ylabel("Episode Length")
     plt.ylabel("Steps per Episode")
     plt.title("Episode Length over Time")
-    plt.subplot(122)
-    plt.hist(stats['length'], zorder=3)
-    plt.grid(zorder=0)
-    plt.xlabel("Episode Length")
-    plt.ylabel("Count")
-    plt.tight_layout()
-    plt.title("Episode Length (Histogram)")
-
-    st = plt.suptitle(title_base)
-    # shift subplots down:
-    st.set_y(0.95)
-    fig1.subplots_adjust(top=0.85)
-
+    # plt.subplot(122)
+    # plt.hist(stats['length'], zorder=3)
+    # plt.grid(zorder=0)
+    # plt.xlabel("Episode Length")
+    # plt.ylabel("Count")
+    # # plt.tight_layout()
+    # plt.title("Episode Length (Histogram)")
+    # st = plt.suptitle(title_base)
+    # # shift subplots down:
+    # st.set_y(0.95)
+    # fig1.subplots_adjust(top=0.85)
     fig1 = watermark(fig1)
-
     # Plot the episode reward over time
-    fig2 = plt.figure(figsize=(10, 5))
+    # fig2 = plt.figure(figsize=(10, 5))
+    fig2 = plt.figure()
     rewards_smoothed = pd.Series(stats['reward']).rolling(
         smoothing_window, min_periods=smoothing_window
     ).mean()
-    plt.subplot(121)
+    # plt.subplot(121)
     plt.grid()
-    plt.tight_layout()
+    # plt.tight_layout()
     plt.plot(rewards_smoothed, linewidth=.5)
     plt.xlabel("Episode")
     plt.ylabel("Episode Reward (Smoothed)")
     plt.title("Episode Reward over Time ({})".format(smoothing_window))
-    plt.subplot(122)
-    plt.tight_layout()
-    plt.hist(stats['reward'], zorder=3)
-    plt.grid(zorder=0)
-    plt.xlabel("Episode Reward")
-    plt.ylabel("Count")
-    plt.title("Episode Reward (Histogram)")
-
-    st = plt.suptitle(title_base)
+    # plt.subplot(122)
+    # plt.tight_layout()
+    # plt.hist(stats['reward'], zorder=3)
+    # plt.grid(zorder=0)
+    # plt.xlabel("Episode Reward")
+    # plt.ylabel("Count")
+    # plt.title("Episode Reward (Histogram)")
+    # st = plt.suptitle(title_base)
     # shift subplots down:
-    st.set_y(0.95)
-    fig2.subplots_adjust(top=0.85)
-
+    # st.set_y(0.95)
+    # fig2.subplots_adjust(top=0.85)
     fig2 = watermark(fig2)
-
     # Plot time steps and episode number
-    fig3 = plt.figure(figsize=(10, 5))
-    plt.subplot(121)
+    fig3 = plt.figure() # plt.figure(figsize=(10, 5))
+    # plt.subplot(121)
     plt.grid()
-    plt.tight_layout()
+    # plt.tight_layout()
     time_steps = np.cumsum(stats['time'])
     plt.plot(time_steps, np.arange(len(stats['time'])), linewidth=1)
     plt.xlabel("Time Steps")
     plt.ylabel("Episode")
     plt.title("Episode per time step")
-    plt.subplot(122)
-    plt.tight_layout()
-    plt.hist(time_steps, zorder=3)
-    plt.grid(zorder=0)
-    plt.xlabel("Time Step")
-    plt.ylabel("Count")
-    plt.title("Episode Time (Histogram)")
-
-    st = plt.suptitle(title_base)
+    # plt.subplot(122)
+    # # plt.tight_layout()
+    # plt.hist(time_steps, zorder=3)
+    # plt.grid(zorder=0)
+    # plt.xlabel("Time Step")
+    # plt.ylabel("Count")
+    # plt.title("Episode Time (Histogram)")
+    # st = plt.suptitle(title_base)
     # shift subplots down:
-    st.set_y(0.95)
-    fig3.subplots_adjust(top=0.85)
-
+    # st.set_y(0.95)
+    # fig3.subplots_adjust(top=0.85)
     fig3 = watermark(fig3)
-
+    plt.tight_layout()
     return fig1, fig2, fig3
 
 
